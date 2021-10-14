@@ -1,4 +1,17 @@
 import React, { Component } from "react"
+import { Container, List, Fab, withStyles} from "@material-ui/core";
+import Note from "./components/Notes";
+import { Add } from "@material-ui/icons";
+
+
+
+const styles = {
+  fab: {
+    position: 'absolute',
+    bottom: "2rem",
+    right: "2rem",
+  }
+};
 
 class App extends Component{
   constructor(props) {
@@ -19,18 +32,41 @@ class App extends Component{
         {
           id: "95747b61-c935-45e9-a156-325307bade96",
           title: "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.",
+          text: "Praesent eleifend, lectus non molestie dictum, arcu sapien accumsan eros, sodales dapibus dolor lacus in dolor. Fusce blandit augue condimentum eros luctus ullamcorper. Praesent hendrerit nunc a augue tempor finibus. Morbi ultricies lectus ac risus hendrerit, a aliquam ante tincidunt. Suspendisse viverra iaculis consequat. Nam nec consectetur diam. Cras porta metus in nibh facilisis interdum. Aenean lobortis feugiat enim quis molestie. Suspendisse ultrices bibendum volutpat. Praesent et orci est. Pellentesque ut fringilla nibh. Donec vel pretium nisl. Praesent varius, magna sit amet mollis rutrum, urna lacus rutrum magna, in cursus lectus massa id lorem. Etiam risus enim, fringilla sit amet lectus at, condimentum maximus nulla."
         }
       ]
     }
   }
   render() {
-    return (
-      <div> 
-        {JSON.stringify(this.state.notes, null, 2)}
-      </div>
-    );
-    }
-  
-}
+    const { notes } = this.state;
 
-export default App;
+    return (
+      <Container>
+        <List>
+          {
+            notes.map((note, index) => {
+              return <Note note={note} key={index} deleteNote={this.deleteNote} />;
+            })
+          }
+
+        </List>
+        <Fab className={this.props.classes.fab}>
+          <Add />
+        </Fab>
+      </Container>
+
+    );
+  }
+  
+
+    deleteNote = (note) => {
+      this.setState((state) => {
+        return {
+          notes: state.notes.filter((n) => n.id !== note.id),
+        };
+      });
+    };
+
+}
+export default withStyles(styles)(App);
+
