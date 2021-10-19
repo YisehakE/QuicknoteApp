@@ -1,17 +1,11 @@
 import React, { Component } from "react"
-import { Container, List, Fab, withStyles} from "@material-ui/core";
-import Note from "./components/Notes";
-import { Add } from "@material-ui/icons";
+import { Container } from "@material-ui/core";
+import DisplayNotes from "./pages/DisplayNotes";
+import Upsertnote from "./pages/Upsertnote";
+import { Route, Switch } from "react-router";
+import { v4 as uuidv4 } from "uuid";
 
 
-
-const styles = {
-  fab: {
-    position: 'absolute',
-    bottom: "2rem",
-    right: "2rem",
-  }
-};
 
 class App extends Component{
   constructor(props) {
@@ -38,35 +32,55 @@ class App extends Component{
     }
   }
   render() {
-    const { notes } = this.state;
+    
+    const {notes} = this.state;
 
     return (
       <Container>
-        <List>
-          {
-            notes.map((note, index) => {
-              return <Note note={note} key={index} deleteNote={this.deleteNote} />;
-            })
-          }
-
-        </List>
-        <Fab className={this.props.classes.fab}>
-          <Add />
-        </Fab>
+        <Switch>
+          <Route exact path="/">
+            <DisplayNotes notes={notes} deleteNote={this.deleteNote} />
+          </Route>
+          <Route path="/add">
+            <Upsertnote upsertNote={this.addNote}/>
+          </Route>
+          <Route path="/edit">
+            <Upsertnote upsertNote={this.editNote}/>
+          </Route>
+        </Switch>
       </Container>
-
     );
   }
-  
 
-    deleteNote = (note) => {
+  addNote = (note) => {
+    this.setState((state) => {
+      return {
+        notes: [...state.notes, Object.assign(note, {
+          id: uuidv4()
+        })],
+      };
+    });
+  }
+
+  editNote = (note) => {
+    this.setState((state) => {
+      return {
+        notes: state.notes.map(n => n.id === note.id ? note : n),
+      };
+    });
+  };
+
+
+  deleteNote = (note) => {
       this.setState((state) => {
         return {
           notes: state.notes.filter((n) => n.id !== note.id),
         };
       });
-    };
+  }
+    
 
 }
-export default withStyles(styles)(App);
+
+export default App;
 

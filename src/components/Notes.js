@@ -1,7 +1,8 @@
 
 import { Button, Collapse, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
-import { ExpandLess, ExpandMore, Delete} from "@material-ui/icons";
+import { ExpandLess, ExpandMore, Delete, Edit} from "@material-ui/icons";
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 class Notes extends Component {
 
     constructor(props) {
@@ -23,6 +24,21 @@ class Notes extends Component {
                     </ListItemIcon>
                     <ListItemText primary={note.title} />
                     <ListItemIcon>
+                        <Link to={ {
+                            pathname: "/edit",
+                            search: `?id=${note.id}`,
+                            state: { 
+                                title: note.title, 
+                                text: note.text, 
+                                id: note.id 
+                            },
+                        }}>
+                            <Button >
+                                <Edit />
+                            </Button>
+                        </Link>
+                    </ListItemIcon>
+                    <ListItemIcon>
                         <Button onClick={ () => {deleteNote(note)} }>
                             <Delete />
                         </Button>
@@ -43,9 +59,6 @@ class Notes extends Component {
     handleClick = () => {
         this.setState({open: !this.state.open});
     }
-
-
-
 
 }
 
